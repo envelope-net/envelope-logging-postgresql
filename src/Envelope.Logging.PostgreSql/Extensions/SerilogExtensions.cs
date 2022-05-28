@@ -12,6 +12,62 @@ public static class SerilogExtensions
 {
 	[DebuggerHidden]
 	[DebuggerStepThrough]
+	public static LoggerConfiguration LogMessageSinkToPostgreSql(
+		this LoggerSinkConfiguration loggerConfiguration,
+		DBLogMessageSinkOptions options,
+		LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum)
+	{
+		if (loggerConfiguration == null)
+			throw new ArgumentNullException(nameof(loggerConfiguration));
+
+		var sink = new DBLogMessageSink(options);
+
+		[DebuggerHidden]
+		[DebuggerStepThrough]
+		bool Condition(LogEvent logEvent)
+			=> LogEventHelper.IsLogMessage(logEvent);
+
+		[DebuggerHidden]
+		[DebuggerStepThrough]
+		void Configure(LoggerSinkConfiguration configuration)
+			=> configuration.Sink(sink, restrictedToMinimumLevel);
+
+		return loggerConfiguration
+				.Conditional(Condition, Configure);
+	}
+
+	[DebuggerHidden]
+	[DebuggerStepThrough]
+	public static LoggerConfiguration LogSinkToPostgreSql(
+		this LoggerSinkConfiguration loggerConfiguration,
+		DBLogSinkOptions options,
+		bool logAllLogEvents = false,
+		LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum)
+	{
+		if (loggerConfiguration == null)
+			throw new ArgumentNullException(nameof(loggerConfiguration));
+
+		var sink = new DBLogSink(options);
+
+		[DebuggerHidden]
+		[DebuggerStepThrough]
+		bool Condition(LogEvent logEvent)
+			=> logAllLogEvents
+				|| (!LogEventHelper.IsLogMessage(logEvent)
+					&& !LogEventHelper.IsEnvironmentInfo(logEvent)
+					&& !LogEventHelper.IsHardwareInfo(logEvent));
+
+		[DebuggerHidden]
+		[DebuggerStepThrough]
+		void Configure(LoggerSinkConfiguration configuration)
+			=> configuration.Sink(sink, restrictedToMinimumLevel);
+
+		return loggerConfiguration
+				.Conditional(Condition, Configure);
+	}
+
+	[DebuggerHidden]
+	[DebuggerStepThrough]
 	public static LoggerConfiguration LogMessageSinkToPostgreSql<TIdentity>(
 		this LoggerSinkConfiguration loggerConfiguration,
 		DBLogMessageSinkOptions<TIdentity> options,

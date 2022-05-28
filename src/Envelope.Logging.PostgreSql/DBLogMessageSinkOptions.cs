@@ -4,65 +4,64 @@ using Envelope.Database.PostgreSql;
 
 namespace Envelope.Logging.PostgreSql;
 
-public class DBLogMessageSinkOptions<TIdentity> : DbBatchWriterOptions, IBatchWriterOptions
-	where TIdentity : struct
+public class DBLogMessageSinkOptions : DbBatchWriterOptions, IBatchWriterOptions
 {
 	public DBLogMessageSinkOptions()
 	{
 		PropertyNames = new List<string>
 		{
-			nameof(ILogMessage<TIdentity>.IdLogMessage),
-			nameof(ILogMessage<TIdentity>.IdLogLevel),
-			nameof(ILogMessage<TIdentity>.CreatedUtc),
-			nameof(ILogMessage<TIdentity>.TraceInfo.SourceSystemName),
-			nameof(ILogMessage<TIdentity>.TraceInfo.RuntimeUniqueKey),
-			nameof(ILogMessage<TIdentity>.LogCode),
-			nameof(ILogMessage<TIdentity>.ClientMessage),
-			nameof(ILogMessage<TIdentity>.InternalMessage),
-			nameof(ILogMessage<TIdentity>.TraceInfo.TraceFrame.MethodCallId),
+			nameof(ILogMessage.IdLogMessage),
+			nameof(ILogMessage.IdLogLevel),
+			nameof(ILogMessage.CreatedUtc),
+			nameof(ILogMessage.TraceInfo.SourceSystemName),
+			nameof(ILogMessage.TraceInfo.RuntimeUniqueKey),
+			nameof(ILogMessage.LogCode),
+			nameof(ILogMessage.ClientMessage),
+			nameof(ILogMessage.InternalMessage),
+			nameof(ILogMessage.TraceInfo.TraceFrame.MethodCallId),
 			Serilog.Core.Constants.SourceContextPropertyName,
-			nameof(ILogMessage<TIdentity>.TraceInfo.TraceFrame),
-			nameof(ILogMessage<TIdentity>.StackTrace),
-			nameof(ILogMessage<TIdentity>.Detail),
-			nameof(ILogMessage<TIdentity>.TraceInfo.IdUser),
-			nameof(ILogMessage<TIdentity>.CommandQueryName),
-			nameof(ILogMessage<TIdentity>.IdCommandQuery),
-			nameof(ILogMessage<TIdentity>.MethodCallElapsedMilliseconds),
-			nameof(ILogMessage<TIdentity>.PropertyName),
-			nameof(ILogMessage<TIdentity>.DisplayPropertyName),
-			nameof(ILogMessage<TIdentity>.ValidationFailure),
-			nameof(ILogMessage<TIdentity>.IsValidationError),
-			nameof(ILogMessage<TIdentity>.CustomData),
-			nameof(ILogMessage<TIdentity>.Tags),
-			nameof(ILogMessage<TIdentity>.TraceInfo.CorrelationId)
+			nameof(ILogMessage.TraceInfo.TraceFrame),
+			nameof(ILogMessage.StackTrace),
+			nameof(ILogMessage.Detail),
+			nameof(ILogMessage.TraceInfo.IdUser),
+			nameof(ILogMessage.CommandQueryName),
+			nameof(ILogMessage.IdCommandQuery),
+			nameof(ILogMessage.MethodCallElapsedMilliseconds),
+			nameof(ILogMessage.PropertyName),
+			nameof(ILogMessage.DisplayPropertyName),
+			nameof(ILogMessage.ValidationFailure),
+			nameof(ILogMessage.IsValidationError),
+			nameof(ILogMessage.CustomData),
+			nameof(ILogMessage.Tags),
+			nameof(ILogMessage.TraceInfo.CorrelationId)
 		};
 
 		PropertyTypeMapping = new Dictionary<string, NpgsqlDbType>
 		{
-			{ nameof(ILogMessage<TIdentity>.IdLogMessage), NpgsqlDbType.Uuid },
-			{ nameof(ILogMessage<TIdentity>.IdLogLevel), NpgsqlDbType.Integer },
-			{ nameof(ILogMessage<TIdentity>.CreatedUtc), NpgsqlDbType.TimestampTz },
-			{ nameof(ILogMessage<TIdentity>.TraceInfo.SourceSystemName), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.TraceInfo.RuntimeUniqueKey), NpgsqlDbType.Uuid },
-			{ nameof(ILogMessage<TIdentity>.LogCode), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.ClientMessage), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.InternalMessage), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.TraceInfo.TraceFrame.MethodCallId), NpgsqlDbType.Uuid },
+			{ nameof(ILogMessage.IdLogMessage), NpgsqlDbType.Uuid },
+			{ nameof(ILogMessage.IdLogLevel), NpgsqlDbType.Integer },
+			{ nameof(ILogMessage.CreatedUtc), NpgsqlDbType.TimestampTz },
+			{ nameof(ILogMessage.TraceInfo.SourceSystemName), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.TraceInfo.RuntimeUniqueKey), NpgsqlDbType.Uuid },
+			{ nameof(ILogMessage.LogCode), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.ClientMessage), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.InternalMessage), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.TraceInfo.TraceFrame.MethodCallId), NpgsqlDbType.Uuid },
 			{ Serilog.Core.Constants.SourceContextPropertyName, NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.TraceInfo.TraceFrame), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.StackTrace), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.Detail), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.TraceInfo.IdUser), NpgsqlDbTypeHelper.GetNpgsqlDbType<TIdentity>() },
-			{ nameof(ILogMessage<TIdentity>.CommandQueryName), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.IdCommandQuery), NpgsqlDbType.Uuid },
-			{ nameof(ILogMessage<TIdentity>.MethodCallElapsedMilliseconds), NpgsqlDbType.Numeric },
-			{ nameof(ILogMessage<TIdentity>.PropertyName), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.DisplayPropertyName), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.ValidationFailure), NpgsqlDbType.Varchar },
-			{ nameof(ILogMessage<TIdentity>.IsValidationError), NpgsqlDbType.Boolean },
-			{ nameof(ILogMessage<TIdentity>.CustomData), NpgsqlDbType.Varchar }, //json
-			{ nameof(ILogMessage<TIdentity>.Tags), NpgsqlDbType.Varchar }, //json
-			{ nameof(ILogMessage<TIdentity>.TraceInfo.CorrelationId), NpgsqlDbType.Uuid }
+			{ nameof(ILogMessage.TraceInfo.TraceFrame), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.StackTrace), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.Detail), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.TraceInfo.IdUser), NpgsqlDbTypeHelper.GetNpgsqlDbType<Guid>() },
+			{ nameof(ILogMessage.CommandQueryName), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.IdCommandQuery), NpgsqlDbType.Uuid },
+			{ nameof(ILogMessage.MethodCallElapsedMilliseconds), NpgsqlDbType.Numeric },
+			{ nameof(ILogMessage.PropertyName), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.DisplayPropertyName), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.ValidationFailure), NpgsqlDbType.Varchar },
+			{ nameof(ILogMessage.IsValidationError), NpgsqlDbType.Boolean },
+			{ nameof(ILogMessage.CustomData), NpgsqlDbType.Varchar }, //json
+			{ nameof(ILogMessage.Tags), NpgsqlDbType.Varchar }, //json
+			{ nameof(ILogMessage.TraceInfo.CorrelationId), NpgsqlDbType.Uuid }
 		};
 	}
 }

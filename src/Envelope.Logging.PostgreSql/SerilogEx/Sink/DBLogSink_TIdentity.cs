@@ -17,15 +17,16 @@ namespace Envelope.Logging.PostgreSql.SerilogEx.Sink;
 		.WriteTo.Console())
  */
 
-public class DBLogSink : DbBatchWriter<LogEvent>, ILogEventSink, IDisposable
+public class DBLogSink<TIdentity> : DbBatchWriter<LogEvent>, ILogEventSink, IDisposable
+	where TIdentity : struct
 {
-	public DBLogSink(DBLogSinkOptions options, Action<string, object?, object?, object?>? errorLogger = null)
-		: base(options ?? new DBLogSinkOptions(), errorLogger ?? SelfLog.WriteLine)
+	public DBLogSink(DBLogSinkOptions<TIdentity> options, Action<string, object?, object?, object?>? errorLogger = null)
+		: base(options ?? new DBLogSinkOptions<TIdentity>(), errorLogger ?? SelfLog.WriteLine)
 	{
 	}
 
 	public override IDictionary<string, object?>? ToDictionary(LogEvent logEvent)
-		=> LogEventHelper.ConvertLogToDictionary(logEvent);
+		=> LogEventHelper.ConvertLogToDictionary<TIdentity>(logEvent);
 
 	public void Emit(LogEvent logEvent)
 		=> Write(logEvent);
