@@ -56,11 +56,11 @@ public class DBLogSinkOptions<TIdentity> : DbBatchWriterOptions, IBatchWriterOpt
 		PropertyValueConverter = new Dictionary<string, Func<object?, object?>>
 		{
 #pragma warning disable CS8605 // Unboxing a possibly null value.
-			{ nameof(LogEvent.Level), (level) => (int)level },
+			{ nameof(LogEvent.Level), level => (int)level },
 #pragma warning restore CS8605 // Unboxing a possibly null value.
 			{
 				nameof(LogEvent.Properties),
-				(properties) =>
+				properties =>
 				{
 					if (properties is not IReadOnlyDictionary<string, LogEventPropertyValue> serilogProperties)
 						return null;
