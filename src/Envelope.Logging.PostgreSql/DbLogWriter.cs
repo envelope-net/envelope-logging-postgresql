@@ -54,35 +54,35 @@ public class DbLogWriter : IDbLogWriter, IDisposable
 		dbLogWriter?.Dispose();
 	}
 
-	private bool disposed;
+	private bool _disposed;
 	protected virtual void Dispose(bool disposing)
 	{
-		if (!disposed)
-		{
-			if (disposing)
-			{
-				try
-				{
-					_environmentInfoWriter?.Dispose();
-				}
-				catch (Exception ex)
-				{
-					var msg = string.Format($"{nameof(LogWriter)}: Disposing {nameof(_environmentInfoWriter)} '{_environmentInfoWriter?.GetType().FullName ?? "null"}': {ex.ToStringTrace()}");
-					Serilog.Log.Logger.Error(ex, msg);
-				}
+		if (_disposed)
+			return;
 
-				try
-				{
-					_hardwareInfoWriter?.Dispose();
-				}
-				catch (Exception ex)
-				{
-					var msg = string.Format($"{nameof(LogWriter)}: Disposing {nameof(_hardwareInfoWriter)} '{_hardwareInfoWriter?.GetType().FullName ?? "null"}': {ex.ToStringTrace()}");
-					Serilog.Log.Logger.Error(ex, msg);
-				}
+		_disposed = true;
+
+		if (disposing)
+		{
+			try
+			{
+				_environmentInfoWriter?.Dispose();
+			}
+			catch (Exception ex)
+			{
+				var msg = string.Format($"{nameof(LogWriter)}: Disposing {nameof(_environmentInfoWriter)} '{_environmentInfoWriter?.GetType().FullName ?? "null"}': {ex.ToStringTrace()}");
+				Serilog.Log.Logger.Error(ex, msg);
 			}
 
-			disposed = true;
+			try
+			{
+				_hardwareInfoWriter?.Dispose();
+			}
+			catch (Exception ex)
+			{
+				var msg = string.Format($"{nameof(LogWriter)}: Disposing {nameof(_hardwareInfoWriter)} '{_hardwareInfoWriter?.GetType().FullName ?? "null"}': {ex.ToStringTrace()}");
+				Serilog.Log.Logger.Error(ex, msg);
+			}
 		}
 	}
 
