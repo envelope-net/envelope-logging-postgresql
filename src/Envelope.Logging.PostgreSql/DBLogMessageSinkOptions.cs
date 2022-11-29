@@ -31,7 +31,7 @@ public class DBLogMessageSinkOptions : DbBatchWriterOptions, IBatchWriterOptions
 			nameof(ILogMessage.DisplayPropertyName),
 			nameof(ILogMessage.ValidationFailure),
 			nameof(ILogMessage.IsValidationError),
-			nameof(ILogMessage.CustomData),
+			nameof(ILogMessage.TraceInfo.ContextProperties),
 			nameof(ILogMessage.Tags),
 			nameof(ILogMessage.TraceInfo.CorrelationId)
 		};
@@ -59,7 +59,7 @@ public class DBLogMessageSinkOptions : DbBatchWriterOptions, IBatchWriterOptions
 			{ nameof(ILogMessage.DisplayPropertyName), NpgsqlDbType.Varchar },
 			{ nameof(ILogMessage.ValidationFailure), NpgsqlDbType.Varchar },
 			{ nameof(ILogMessage.IsValidationError), NpgsqlDbType.Boolean },
-			{ nameof(ILogMessage.CustomData), NpgsqlDbType.Varchar }, //json
+			{ nameof(ILogMessage.TraceInfo.ContextProperties), NpgsqlDbType.Varchar }, //json
 			{ nameof(ILogMessage.Tags), NpgsqlDbType.Varchar }, //json
 			{ nameof(ILogMessage.TraceInfo.CorrelationId), NpgsqlDbType.Uuid }
 		};
