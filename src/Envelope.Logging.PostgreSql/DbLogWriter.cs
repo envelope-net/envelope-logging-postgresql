@@ -1,4 +1,5 @@
-﻿using Envelope.Extensions;
+﻿using Envelope.Audit;
+using Envelope.Extensions;
 using Envelope.Hardware;
 using Envelope.Infrastructure;
 using Envelope.Logging.PostgreSql.Internal;
@@ -17,17 +18,23 @@ public class DbLogWriter : IDbLogWriter, IDisposable
 
 	private readonly EnvironmentInfoWriter? _environmentInfoWriter;
 	private readonly HardwareInfoWriter? _hardwareInfoWriter;
+	private readonly ApplicationEntryTokenWriter? _applicationEntryTokenWriter;
+	private readonly ApplicationEntryWriter? _applicationEntryWriter;
 
 	internal DbLogWriter(
 		EnvironmentInfoWriter? environmentInfoWriter,
-		HardwareInfoWriter? hardwareInfoWriter)
+		HardwareInfoWriter? hardwareInfoWriter,
+		ApplicationEntryTokenWriter? applicationEntryTokenWriter,
+		ApplicationEntryWriter? applicationEntryWriter)
 	{
 		_environmentInfoWriter = environmentInfoWriter;
 		_hardwareInfoWriter = hardwareInfoWriter;
+		_applicationEntryTokenWriter = applicationEntryTokenWriter;
+		_applicationEntryWriter = applicationEntryWriter;
 	}
 
-	public void WriteEnvironmentInfo()
-		=> WriteEnvironmentInfo(EnvironmentInfoProvider.GetEnvironmentInfo());
+	public void WriteEnvironmentInfo(string applicationName)
+		=> WriteEnvironmentInfo(EnvironmentInfoProvider.GetEnvironmentInfo(applicationName));
 
 	public void WriteEnvironmentInfo(EnvironmentInfo environmentInfo)
 	{
@@ -46,6 +53,38 @@ public class DbLogWriter : IDbLogWriter, IDisposable
 			throw new InvalidOperationException($"{nameof(HardwareInfoWriter)} was not configured");
 
 		_hardwareInfoWriter.Write(hardwareInfo);
+	}
+
+	public Task<ApplicationEntryToken?> GetApplicationEntryTokenAsync(string token, int version, string sourceFilePath, CancellationToken cancellationToken = default)
+	{
+		if (_applicationEntryTokenWriter == null)
+			throw new InvalidOperationException($"{nameof(ApplicationEntryTokenWriter)} was not configured");
+
+		return _applicationEntryTokenWriter.GetApplicationEntryTokenAsync(token, version, sourceFilePath, cancellationToken);
+	}
+
+	public void WriteApplicationEntryToken(ApplicationEntryToken applicationEntryToken)
+	{
+		if (_applicationEntryTokenWriter == null)
+			throw new InvalidOperationException($"{nameof(ApplicationEntryTokenWriter)} was not configured");
+
+		_applicationEntryTokenWriter.Write(applicationEntryToken);
+	}
+
+	public Task UpdateApplicationEntryTokenAsync(ApplicationEntryToken applicationEntryToken, CancellationToken cancellationToken = default)
+	{
+		if (_applicationEntryTokenWriter == null)
+			throw new InvalidOperationException($"{nameof(ApplicationEntryTokenWriter)} was not configured");
+
+		return _applicationEntryTokenWriter.UpdateApplicationEntryTokenAsync(applicationEntryToken, cancellationToken);
+	}
+
+	public void WriteApplicationEntry(ApplicationEntry applicationEntry)
+	{
+		if (_applicationEntryWriter == null)
+			throw new InvalidOperationException($"{nameof(ApplicationEntryWriter)} was not configured");
+
+		_applicationEntryWriter.Write(applicationEntry);
 	}
 
 	public static void CloseAndFlush()
@@ -81,6 +120,16 @@ public class DbLogWriter : IDbLogWriter, IDisposable
 			catch (Exception ex)
 			{
 				var msg = string.Format($"{nameof(LogWriter)}: Disposing {nameof(_hardwareInfoWriter)} '{_hardwareInfoWriter?.GetType().FullName ?? "null"}': {ex.ToStringTrace()}");
+				Serilog.Log.Logger.Error(ex, msg);
+			}
+
+			try
+			{
+				_applicationEntryWriter?.Dispose();
+			}
+			catch (Exception ex)
+			{
+				var msg = string.Format($"{nameof(LogWriter)}: Disposing {nameof(_applicationEntryWriter)} '{_applicationEntryWriter?.GetType().FullName ?? "null"}': {ex.ToStringTrace()}");
 				Serilog.Log.Logger.Error(ex, msg);
 			}
 		}

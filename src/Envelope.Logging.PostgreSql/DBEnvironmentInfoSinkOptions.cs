@@ -13,6 +13,7 @@ public class DBEnvironmentInfoSinkOptions : DbBatchWriterOptions, IBatchWriterOp
 
 		PropertyNames = new List<string>
 		{
+			nameof(EnvironmentInfo.ApplicationName),
 			nameof(EnvironmentInfo.RuntimeUniqueKey),
 			nameof(EnvironmentInfo.CreatedUtc),
 			nameof(EnvironmentInfo.RunningEnvironment),
@@ -37,6 +38,7 @@ public class DBEnvironmentInfoSinkOptions : DbBatchWriterOptions, IBatchWriterOp
 
 		PropertyTypeMapping = new Dictionary<string, NpgsqlDbType>
 		{
+			{ nameof(EnvironmentInfo.ApplicationName), NpgsqlDbType.Varchar },
 			{ nameof(EnvironmentInfo.RuntimeUniqueKey), NpgsqlDbType.Uuid },
 			{ nameof(EnvironmentInfo.CreatedUtc), NpgsqlDbType.TimestampTz },
 			{ nameof(EnvironmentInfo.RunningEnvironment), NpgsqlDbType.Varchar },
